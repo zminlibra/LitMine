@@ -37,14 +37,14 @@
 
 ---
 
-## Phase 1：安全 + 护栏 + 体验（进行中）
+## Phase 1：安全 + 护栏 + 体验（已完成 ✅）
 
-- [ ] API Key 代理端点（系统 Key，预留结构化 JSON 格式）
-- [ ] 翻译缓存落地（PG 列 `title_cn` / `abstract_cn`，详情页 + 对比弹窗两条路径，含存量回填）
-- [ ] 爬虫 rate limit（token bucket，PubMed/CrossRef 各 1 req/s）
-- [ ] 进度条修复（crawl_paper_job 回调 3-4 行计数更新）
-- [ ] GROBID 健康检查优化（docker-compose start_period 90s，API 重试时友好提示）
-- [ ] 首页状态卡（"已收录 X 篇，术语模型训练中"）
+- [x] API Key 代理端点（系统 Key，预留结构化 JSON 格式）
+- [x] 翻译缓存落地（PG 列 `title_cn` / `abstract_cn`，详情页 + 对比弹窗两条路径，含存量回填）
+- [x] 爬虫 rate limit（token bucket，PubMed/CrossRef 各 1 req/s）
+- [x] 进度条修复（crawl_paper_job 回调 3-4 行计数更新）
+- [x] GROBID 健康检查优化（docker-compose start_period 90s，API 重试时友好提示）
+- [x] 首页状态卡（"已收录 X 篇，术语模型训练中"）
 
 **验收条件：**
 - API Key 不暴露在前端
@@ -55,13 +55,13 @@
 
 ---
 
-## Phase 2：术语表动态化 + 图表裁剪
+## Phase 2：术语表动态化 + 图表裁剪（已完成 ✅）
 
-- [ ] 术语表动态化：种子词表 + TF-IDF 混合策略
-- [ ] 砍 ForceGraph、AuthorNetwork、TimelineView、MethodsTimeline
-- [ ] HotspotBarChart + GapMatrix 保留并切换术语动态词表
-- [ ] GapMatrix 加数据覆盖度标签（"空白可能来自数据覆盖限制"）
-- [ ] 删论文时清理对应实体数据
+- [x] 术语表动态化：种子词表 + TF-IDF 混合策略
+- [x] 砍 ForceGraph、AuthorNetwork、TimelineView、MethodsTimeline（组件文件保留但不再引用）
+- [x] HotspotBarChart + GapMatrix 保留并切换术语动态词表
+- [x] GapMatrix 加数据覆盖度标签（"空白可能来自数据覆盖限制"）
+- [x] 删论文时清理对应实体数据（Neo4j 已砍，此条 N/A）
 
 **验收条件：**
 - 术语表随论文积累自动更新，不依赖预设学科词表
@@ -70,13 +70,13 @@
 
 ---
 
-## Phase 3：服务栈瘦身
+## Phase 3：服务栈瘦身（已完成 ✅）
 
-- [ ] 砍 arq（report 生成改同步内联）
-- [ ] 砍 MinIO（PDF 存本地文件系统，含旧文件迁移）
-- [ ] 砍 Neo4j（容器 + 代码清理）
-- [ ] docker-compose healthcheck（GROBID start_period 90s）
-- [ ] 服务栈：6 容器 → 3 容器（PG + GROBID + API）
+- [x] 砍 arq（report 生成改同步内联，Docker 去 arq 容器）
+- [x] 砍 MinIO（PDF 存本地 `data/pdfs/`，S3 配置和容器已清理）
+- [x] 砍 Neo4j（容器 + 代码 + graph_service 已清理）
+- [x] docker-compose healthcheck（GROBID start_period 90s）
+- [x] 服务栈：6 容器 → 3 容器（PG + Redis + GROBID）
 
 **验收条件：**
 - `docker compose ps` 只显示 3 个容器
@@ -102,4 +102,4 @@
 
 ---
 
-*最后更新：2026-05-11*
+*最后更新：2026-05-11（Phase 1-3 完成，push 到 GitHub）*
