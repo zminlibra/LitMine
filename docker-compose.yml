@@ -1,0 +1,54 @@
+version: "3.8"
+
+services:
+  # ── PostgreSQL 16 + pgvector ──
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: litmine-postgres
+    environment:
+      POSTGRES_USER: litmine
+      POSTGRES_PASSWORD: litmine_dev
+      POSTGRES_DB: litmine
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U litmine"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  # ── Redis 7 (Cache + Message Queue) ──
+  redis:
+    image: redis:7-alpine
+    container_name: litmine-redis
+    command: redis-server --appendonly yes
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 3s
+      timeout: 2s
+      retries: 5
+
+  # ── GROBID (PDF → TEI XML extraction) ──
+  grobid:
+    image: lfoppiano/grobid:0.8.1
+    container_name: litmine-grobid
+    ports:
+      - "8070:8070"
+    environment:
+      JAVA_OPTS: "-Xmx2g"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8070/api/isalive"]
+      interval: 30s
+      timeout: 10s
+      retries: 15
+      start_period: 90s
+
+volumes:
+  postgres_data:
+  redis_data:

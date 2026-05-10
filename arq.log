@@ -1,0 +1,9 @@
+08:23:20: Starting worker for 2 functions: crawl_paper_job, generate_report_job
+08:23:20: redis_version=7.4.8 mem_usage=1.58M clients_connected=1 db_keys=5
+09:18:28:   0.02s ¡ú 653b4b56d7df4872b85389e630a92758:crawl_paper_job('45cb0ce8-8538-4180-928a-a71f03da24fc')
+arXiv crawl failed: Client error '429 Unknown Error' for url 'https://export.arxiv.org/api/query?search_query=all%3A%28%28all%3Ametabolic+AND+all%3Aengineering%29%29&start=0&max_results=12&sortBy=relevance&sortOrder=descending'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429
+09:19:02:  34.14s ¡û 653b4b56d7df4872b85389e630a92758:crawl_paper_job ¡ñ 
+09:20:37:   0.33s ¡ú f409424aa18747e397d471231ced1ee7:generate_report_job('368dfc75-f515-46f1-80b0-dfb3f5fe52ba')
+09:21:00:  22.95s ¡û f409424aa18747e397d471231ced1ee7:generate_report_job ¡ñ 
+09:23:21: recording health: May-04 09:23:21 j_complete=2 j_failed=0 j_retried=0 j_ongoing=0 queued=0
