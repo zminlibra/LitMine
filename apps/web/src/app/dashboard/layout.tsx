@@ -4,12 +4,14 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
-import { Microscope, LayoutDashboard, LogOut, User } from "lucide-react";
+import { Microscope, LayoutDashboard, LogOut, User, Settings } from "lucide-react";
+import LLMSettingsModal from "@/components/llm/LLMSettingsModal";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const { user, loading, logout } = useAuth();
   const router = useRouter();
   const [mounted, setMounted] = useState(false);
+  const [llmSettingsOpen, setLlmSettingsOpen] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -48,6 +50,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           >
             <LayoutDashboard className="h-4 w-4" /> Dashboard
           </Button>
+          <Button
+            variant="ghost"
+            className="w-full justify-start gap-2"
+            onClick={() => setLlmSettingsOpen(true)}
+          >
+            <Settings className="h-4 w-4" /> LLM Settings
+          </Button>
         </nav>
         <div className="p-3 border-t border-zinc-200">
           <div className="flex items-center gap-2 mb-2">
@@ -62,6 +71,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
       {/* Main content */}
       <main className="flex-1 overflow-auto bg-zinc-50">{children}</main>
+
+      <LLMSettingsModal open={llmSettingsOpen} onClose={() => setLlmSettingsOpen(false)} />
     </div>
   );
 }

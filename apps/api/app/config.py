@@ -52,6 +52,68 @@ class Settings(BaseSettings):
     free_data_retention_days: int = 30
 
 
+# Preset configurations for all supported LLM providers.
+# Users can bring their own API key and select any provider from the frontend.
+LLM_PROVIDERS: dict = {
+    "deepseek": {
+        "name": "DeepSeek",
+        "base_url": "https://api.deepseek.com",
+        "models": ["deepseek-chat", "deepseek-reasoner", "deepseek-v4-flash", "deepseek-v4-pro"],
+        "default_model": "deepseek-chat",
+        "auth_header": "Authorization",
+        "auth_prefix": "Bearer ",
+    },
+    "openai": {
+        "name": "OpenAI",
+        "base_url": "https://api.openai.com/v1",
+        "models": ["gpt-4o", "gpt-4o-mini", "gpt-4.1", "o4-mini", "o3-mini"],
+        "default_model": "gpt-4o-mini",
+        "auth_header": "Authorization",
+        "auth_prefix": "Bearer ",
+    },
+    "anthropic": {
+        "name": "Anthropic",
+        "base_url": "https://api.anthropic.com",
+        "models": ["claude-sonnet-4-7", "claude-haiku-4-5", "claude-opus-4-7", "claude-sonnet-4-5-20250929"],
+        "default_model": "claude-sonnet-4-7",
+        "auth_header": "x-api-key",
+        "auth_prefix": "",
+    },
+    "gemini": {
+        "name": "Google Gemini",
+        "base_url": "https://generativelanguage.googleapis.com/v1beta",
+        "models": ["gemini-3-flash", "gemini-3-pro", "gemini-3.1-flash", "gemini-3.1-pro", "gemini-2.5-flash", "gemini-2.5-pro", "gemini-2.5-flash-lite"],
+        "default_model": "gemini-3-flash",
+        "auth_header": "x-goog-api-key",
+        "auth_prefix": "",
+    },
+    "openrouter": {
+        "name": "OpenRouter",
+        "base_url": "https://openrouter.ai/api/v1",
+        "models": ["openai/gpt-4o", "anthropic/claude-sonnet-4-7", "google/gemini-2.5-flash", "deepseek/deepseek-chat"],
+        "default_model": "openai/gpt-4o",
+        "auth_header": "Authorization",
+        "auth_prefix": "Bearer ",
+    },
+    "qwen": {
+        "name": "通义千问",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "models": ["qwen-plus", "qwen-max", "qwen-turbo", "qwen3-235b-a22b"],
+        "default_model": "qwen-plus",
+        "auth_header": "Authorization",
+        "auth_prefix": "Bearer ",
+    },
+    "kimi": {
+        "name": "Kimi (Moonshot)",
+        "base_url": "https://api.moonshot.cn/v1",
+        "models": ["moonshot-v1-8k", "moonshot-v1-32k", "moonshot-v1-128k"],
+        "default_model": "moonshot-v1-32k",
+        "auth_header": "Authorization",
+        "auth_prefix": "Bearer ",
+    },
+}
+
+
 @lru_cache
 def get_settings() -> Settings:
     return Settings()
