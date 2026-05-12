@@ -3,6 +3,12 @@
 </p>
 
 <p align="center">
+  <img src="https://raw.githubusercontent.com/twitter/twemoji/master/assets/svg/1f52c.svg" width="80" alt="LitMine Logo" />
+</p>
+
+<h1 align="center">LitMine</h1>
+
+<p align="center">
   <strong>AI-powered literature mining and research analytics platform for researchers across all disciplines.</strong>
 </p>
 
