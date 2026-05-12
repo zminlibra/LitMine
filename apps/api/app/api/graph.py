@@ -8,7 +8,7 @@ from app.dependencies import get_current_user
 from app.models import User, Project, Paper
 from app.schemas.graph import (
     HotspotResponse, HotspotItem,
-    GapItem,
+    GapResponse, GapItem,
 )
 
 router = APIRouter(tags=["graph"])
@@ -33,8 +33,9 @@ async def get_hotspots(
     )
     papers = papers_result.scalars().all()
 
-    if len(papers) < 5:
-        return HotspotResponse(hotspots=[])
+    total_paper_count = len(papers)
+    if total_paper_count < 5:
+        return HotspotResponse(hotspots=[], total_paper_count=total_paper_count)
 
     # Combine project keywords with dynamically extracted terms
     from app.services.term_extractor import extract_terms
@@ -87,10 +88,10 @@ async def get_hotspots(
 
     # Sort by trend score descending
     hotspots.sort(key=lambda x: x.trend, reverse=True)
-    return HotspotResponse(hotspots=hotspots[:15])
+    return HotspotResponse(hotspots=hotspots[:15], total_paper_count=total_paper_count)
 
 
-@router.get("/projects/{project_id}/graph/gaps")
+@router.get("/projects/{project_id}/graph/gaps", response_model=GapResponse)
 async def get_gaps(
     project_id: UUID,
     user: User = Depends(get_current_user),
@@ -109,8 +110,9 @@ async def get_gaps(
     )
     papers = papers_result.scalars().all()
 
-    if len(papers) < 5:
-        return []
+    total_paper_count = len(papers)
+    if total_paper_count < 5:
+        return GapResponse(gaps=[], total_paper_count=total_paper_count)
 
     # Extract terms with wider window: top 50 instead of top 30
     # Also include project keywords directly to ensure user's domain terms aren't missed
@@ -142,7 +144,7 @@ async def get_gaps(
     # Filter to terms that appear in at least 2 papers but not in all papers
     active_terms = {t: c for t, c in term_counts.items() if 2 <= c <= len(papers) * 0.8}
     if len(active_terms) < 2:
-        return []
+        return GapResponse(gaps=[], total_paper_count=total_paper_count)
 
     # Find pairs with low co-occurrence, pass full data to frontend
     gaps = []
@@ -153,8 +155,9 @@ async def get_gaps(
             co_occurrence = len(term_sets[t1] & term_sets[t2])
             min_count = min(c1, c2)
             if min_count > 0 and co_occurrence < min_count * 0.4:
-                # Normalized 0-1 gap score
-                gap_score = round(1 - (co_occurrence / min_count), 3)
+                # Laplace-smoothed gap score: never saturates at 1.0
+                # Differentiates pairs with same zero co-occurrence but different paper volume
+                gap_score = round(1 - (co_occurrence + 1) / (min_count + 1), 3)
                 gaps.append((gap_score, GapItem(
                     concept_a=t1,
                     concept_b=t2,
@@ -165,4 +168,4 @@ async def get_gaps(
                 )))
 
     gaps.sort(key=lambda g: g[0], reverse=True)
-    return [g[1] for g in gaps[:15]]
+    return GapResponse(gaps=[g[1] for g in gaps[:15]], total_paper_count=total_paper_count)
