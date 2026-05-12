@@ -11,6 +11,7 @@ class HotspotItem(BaseModel):
 
 class HotspotResponse(BaseModel):
     hotspots: list[HotspotItem]
+    total_paper_count: int = 0
 
 
 class GapItem(BaseModel):
@@ -20,3 +21,8 @@ class GapItem(BaseModel):
     concept_b_papers: int
     co_occurrence: int = 0  # papers containing both concepts
     gap_score: float = 0.0  # combined opportunity score (0-1)
+
+
+class GapResponse(BaseModel):
+    gaps: list[GapItem]
+    total_paper_count: int = 0
