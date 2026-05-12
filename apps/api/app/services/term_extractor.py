@@ -119,6 +119,28 @@ STOP_WORDS: set[str] = {
     "suggest", "suggested", "suggests", "suggesting",
     "seems", "appears", "appear",
     "considered", "considered",
+    # JATS/XML metadata — not research terms
+    "jats", "xmlns", "xlink", "xref", "pubid",
+    "pmid", "doi", "pubmed", "arxiv",
+    # Paper section headers — too generic
+    "introduction", "background", "methods", "results",
+    "discussion", "conclusion", "conclusions",
+    "supplementary", "supplemental", "acknowledgements",
+    # Metadata / UI noise
+    "title", "abstract", "keyword", "keywords",
+    "figure", "table", "fig", "suppl",
+    "author", "authors", "affiliation",
+    "copyright", "license", "permission",
+    "competing", "interests", "availability",
+    "correspondence", "contributions",
+    # Generic research framing words
+    "topic", "topics", "theme", "themes",
+    "gap", "gaps", "overview",
+    # Abstract framing noise — common in academic writing
+    "article", "articles", "here",
+    "provides", "provide", "providing",
+    "drive", "drives", "driven",
+    "class", "classes",
 }
 
 
@@ -181,6 +203,34 @@ def extract_terms(papers: list[dict], max_terms: int = 30) -> list[str]:
 
     # Sort by score
     sorted_terms = sorted(tfidf_scores.items(), key=lambda x: x[1], reverse=True)
+
+    # --- Alias merging: prefer bigrams over their component unigrams ---
+    # Build a lookup of all bigrams and their scores
+    bigram_lookup: dict[str, float] = {}
+    for term, score in sorted_terms:
+        if " " in term:  # is a bigram
+            bigram_lookup[term] = score
+
+    # Filter: remove unigrams that are dominated by a containing bigram
+    merged: list[tuple[str, float]] = []
+    for term, score in sorted_terms:
+        if " " not in term:  # is a unigram
+            # Check if this unigram is the first word of any bigram in the lookup
+            dominated = False
+            for bigram, bigram_score in bigram_lookup.items():
+                parts = bigram.split()
+                if term == parts[0] or term == parts[-1]:
+                    # If the bigram score is at least 60% of the unigram score,
+                    # the unigram is likely a fragment of the more specific bigram
+                    if bigram_score >= score * 0.6:
+                        dominated = True
+                        break
+            if not dominated:
+                merged.append((term, score))
+        else:
+            merged.append((term, score))
+
+    sorted_terms = merged
 
     # Take top terms from TF-IDF, proportionally to max_terms
     n_tfidf = min(len(sorted_terms), int(max_terms * 0.8)) if n_docs >= 10 else int(max_terms * 0.3)

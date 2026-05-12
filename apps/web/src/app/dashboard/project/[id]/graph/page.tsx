@@ -27,7 +27,9 @@ export default function GraphPage() {
   const [error, setError] = useState<string | null>(null);
 
   const [hotspots, setHotspots] = useState<HotspotItem[]>([]);
+  const [hotspotPaperCount, setHotspotPaperCount] = useState(0);
   const [gaps, setGaps] = useState<GapItem[]>([]);
+  const [gapPaperCount, setGapPaperCount] = useState(0);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -42,10 +44,12 @@ export default function GraphPage() {
         if (hotspotRes.ok) {
           const hd = await hotspotRes.json();
           setHotspots(hd.hotspots || []);
+          setHotspotPaperCount(hd.total_paper_count ?? 0);
         }
         if (gapRes.ok) {
           const gd = await gapRes.json();
-          setGaps(Array.isArray(gd) ? gd : []);
+          setGaps(gd.gaps ?? []);
+          setGapPaperCount(gd.total_paper_count ?? 0);
         }
       } catch {
         setError("Failed to load analytics. Please try again.");
@@ -113,11 +117,7 @@ export default function GraphPage() {
         {viewMode === "hotspot" && (
           <section>
             <h2 className="text-base font-semibold text-zinc-800 mb-4">Research Hotspots</h2>
-            {hotspots.length > 0 ? (
-              <HotspotBarChart hotspots={hotspots} />
-            ) : (
-              <p className="text-sm text-zinc-400">Not enough data yet. Add more papers to see hotspot trends.</p>
-            )}
+            <HotspotBarChart hotspots={hotspots} paperCount={hotspotPaperCount} />
           </section>
         )}
 
@@ -127,11 +127,7 @@ export default function GraphPage() {
             <p className="text-xs text-amber-600 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 mb-4">
               Gaps identified by automated term co-occurrence analysis. Some gaps may reflect data coverage limitations rather than true research opportunities.
             </p>
-            {gaps.length > 0 ? (
-              <GapMatrix gaps={gaps} />
-            ) : (
-              <p className="text-sm text-zinc-400">Not enough data to identify gaps. Add more papers to enable gap analysis.</p>
-            )}
+            <GapMatrix gaps={gaps} paperCount={gapPaperCount} />
           </section>
         )}
       </div>

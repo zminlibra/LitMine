@@ -34,7 +34,10 @@ export default function GenerateReportPage() {
         router.push(`/dashboard/project/${projectId}/report`);
       } else {
         const err = await res.json();
-        toast.error(err.detail || "Failed to start generation");
+        const msg = Array.isArray(err.detail)
+          ? err.detail.map((e: any) => e.msg || e).join("; ")
+          : (err.detail || "Failed to start generation");
+        toast.error(msg);
       }
     } catch {
       toast.error("Failed to generate report");

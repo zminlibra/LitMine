@@ -88,6 +88,10 @@ export default function ProjectDetailPage() {
           toast.success(`Discover complete! Found ${msg.total_papers} papers.`);
           fetchProject();
           fetchPapers();
+        } else if (msg.type === "crawl_cancelled") {
+          setSearching(false);
+          fetchProject();
+          fetchPapers();
         } else if (msg.type === "error") {
           toast.error(`Error in ${msg.stage}: ${msg.message}`);
         }
@@ -114,6 +118,24 @@ export default function ProjectDetailPage() {
     } catch {
       toast.error("Failed to start discover");
       setSearching(false);
+    }
+  };
+
+  const handleStopSearch = async () => {
+    if (!confirm("Stop the current discovery process?")) return;
+    try {
+      const res = await api.post(`/api/v1/projects/${projectId}/crawl/cancel`);
+      if (res.ok) {
+        setSearching(false);
+        fetchProject();
+        fetchPapers();
+        toast.success("Discovery stopped");
+      } else {
+        const err = await res.json();
+        toast.error(err.detail || "Failed to stop");
+      }
+    } catch {
+      toast.error("Failed to stop");
     }
   };
 
@@ -301,6 +323,16 @@ export default function ProjectDetailPage() {
             )}
             {isActive ? "Discovering..." : "Discover"}
           </Button>
+          {(isActive || searching) && (
+            <Button
+              variant="outline"
+              size="sm"
+              className="gap-1 text-red-600 hover:bg-red-50 border-red-200"
+              onClick={handleStopSearch}
+            >
+              Stop
+            </Button>
+          )}
         </div>
       </div>
 

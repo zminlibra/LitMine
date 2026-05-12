@@ -51,6 +51,36 @@ async def trigger_crawl(
     return {"detail": "Crawl queued", "project_id": str(project.id)}
 
 
+@router.post("/projects/{project_id}/crawl/cancel", status_code=200)
+async def cancel_crawl(
+    project_id: UUID,
+    user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """Cancel an in-progress crawl."""
+    result = await db.execute(
+        select(Project).where(Project.id == project_id, Project.user_id == user.id)
+    )
+    project = result.scalar_one_or_none()
+    if not project:
+        raise HTTPException(404, detail="Project not found")
+
+    if project.crawl_status in ("idle", "completed", "failed"):
+        raise HTTPException(400, detail=f"No active crawl to cancel (status: {project.crawl_status})")
+
+    project.crawl_status = "idle"
+    await db.commit()
+
+    # Notify via Redis that crawl was cancelled
+    import json
+    redis = await get_redis()
+    await redis.publish(f"crawl_progress:{project_id}", json.dumps({
+        "type": "crawl_cancelled",
+    }))
+
+    return {"detail": "Crawl cancelled", "project_id": str(project.id)}
+
+
 @router.get("/projects/{project_id}/crawl/status", response_model=CrawlStatusResponse)
 async def crawl_status(
     project_id: UUID,

@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
-import { Microscope, ArrowRight, BookOpen, GitGraph, FileText } from "lucide-react";
+import { Microscope, ArrowRight, BookOpen, BarChart3, FileText } from "lucide-react";
 
 export default function HomePage() {
   const { user, loading } = useAuth();
@@ -37,7 +37,7 @@ export default function HomePage() {
               Log in
             </Button>
             <Button onClick={() => router.push("/register")} className="bg-emerald-600 hover:bg-emerald-700">
-              Get started
+              Sign up free
             </Button>
           </div>
         </div>
@@ -51,9 +51,8 @@ export default function HomePage() {
             <span className="text-emerald-600">Discover What Matters.</span>
           </h1>
           <p className="mt-6 text-lg text-zinc-500 max-w-2xl mx-auto">
-            LitMine is an AI-powered literature mining platform for life science researchers.
-            Crawl papers, build knowledge graphs, and generate literature reviews — all in one
-            place.
+            LitMine is an AI-powered literature mining platform for researchers across all disciplines.
+            Discover papers, analyze trends, and generate literature reviews — all in one place.
           </p>
           <div className="mt-10 flex items-center justify-center gap-4">
             <Button
@@ -61,10 +60,10 @@ export default function HomePage() {
               onClick={() => router.push("/register")}
               className="bg-emerald-600 hover:bg-emerald-700"
             >
-              Start Mining <ArrowRight className="ml-1 h-4 w-4" />
+              Create free account <ArrowRight className="ml-1 h-4 w-4" />
             </Button>
             <Button size="lg" variant="outline" onClick={() => router.push("/login")}>
-              Sign in
+              I already have an account
             </Button>
           </div>
         </section>
@@ -74,18 +73,18 @@ export default function HomePage() {
             {[
               {
                 icon: <BookOpen className="h-8 w-8 text-emerald-600" />,
-                title: "Smart Paper Crawling",
-                desc: "Search arXiv, PubMed, and bioRxiv simultaneously. Automatic deduplication and metadata extraction.",
+                title: "Smart Paper Discovery",
+                desc: "Search arXiv, PubMed, bioRxiv, and OpenAlex simultaneously. Automatic deduplication and metadata extraction.",
               },
               {
-                icon: <GitGraph className="h-8 w-8 text-emerald-600" />,
-                title: "Knowledge Graph",
-                desc: "Extract entities — genes, proteins, organisms, methods — and build interactive citation networks.",
+                icon: <BarChart3 className="h-8 w-8 text-emerald-600" />,
+                title: "Research Analytics",
+                desc: "Dynamic hotspot trends and gap analysis — no hardcoded domain vocabulary, works for any field.",
               },
               {
                 icon: <FileText className="h-8 w-8 text-emerald-600" />,
-                title: "Auto-Generated Reviews",
-                desc: "Generate structured literature reviews with research hotspots, methodology evolution, and gap analysis.",
+                title: "Literature Review Generation",
+                desc: "Generate structured reviews with tables, bullet points, and a narrative introduction ready for your paper.",
               },
             ].map((feat, i) => (
               <div key={i} className="rounded-xl border border-zinc-200 p-6">
