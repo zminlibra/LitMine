@@ -1,59 +1,77 @@
 # LitMine
 
-AI-powered literature mining and research analytics platform for scientists.
+<p align="center">
+  <img src="https://img.shields.io/badge/status-active-success?style=flat-square" alt="Status" />
+  <img src="https://img.shields.io/badge/license-MIT-blue?style=flat-square" alt="License" />
+  <img src="https://img.shields.io/badge/Python-3.11+-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python" />
+  <img src="https://img.shields.io/badge/Next.js-16.2-black?style=flat-square&logo=next.js" alt="Next.js" />
+</p>
 
-LitMine helps researchers quickly understand a field's landscape, identify research gaps, and generate structured literature reviews — all from a simple keyword search across multiple academic databases.
+<p align="center"><strong>AI-powered literature mining and research analytics platform for researchers across all disciplines.</strong></p>
 
-## What It Does
+---
 
-- **Discover papers** across arXiv, PubMed, bioRxiv, and OpenAlex
-- **Import papers** via PDF upload (auto-parsed with GROBID), DOI lookup, or BibTeX/RIS files
-- **AI-powered analysis** — 7-dimension deep analysis, translation (EN/ZH/JA/KO/ES/IT), chat with papers, and AI paper comparison
-- **Research analytics** — dynamic hotspot detection and gap matrix, no hardcoded domain vocabulary
-- **Literature review generation** — structured report with tables, bullet points, and a narrative introduction section ready for your paper
-- **Multi-language support** throughout the entire platform
+## What LitMine Does
+
+| | | |
+|---|---|---|
+| :mag: **Discover** | Search papers across arXiv, PubMed, bioRxiv, and OpenAlex simultaneously with automatic deduplication and metadata extraction |
+| :bookmark_tabs: **Import** | Upload PDFs (auto-parsed via GROBID for title, authors, abstract, DOI), paste DOI links, or import BibTeX/RIS files from reference managers |
+| :bar_chart: **Analyze** | See hotspot trends and research gap matrices powered by dynamic TF-IDF term extraction — no hardcoded domain vocabulary, works for **any** research field |
+| :robot: **AI Deep Read** | 7-dimension paper analysis, multi-language translation (EN/ZH/JA/KO/ES/IT), AI-powered paper comparison, and chat-with-paper |
+| :page_facing_up: **Generate** | Structured literature reviews with tables, bullet points, and a narrative introduction section ready for your paper |
+| :globe_with_meridians: **Multi-language** | Translation, analysis, comparison, and report all support English / Chinese / Japanese / Korean / Spanish / Italian |
+
+---
 
 ## Architecture
 
 ```
 litmine/
 ├── apps/
-│   ├── api/          # FastAPI backend
-│   └── web/          # Next.js frontend
+│   ├── api/          # FastAPI backend (Python 3.11+)
+│   └── web/          # Next.js frontend (TypeScript)
 ├── docker-compose.yml
+├── README.md
+├── README_CN.md
+├── ROADMAP.md
 └── scripts/
 ```
 
-**Stack:** FastAPI + Next.js + PostgreSQL (pgvector) + Redis + GROBID (PDF parsing) + DeepSeek (LLM)
+| Layer | Technology |
+|-------|-----------|
+| Backend | FastAPI + SQLAlchemy + asyncpg |
+| Frontend | Next.js 16 (App Router) + TypeScript + Tailwind CSS |
+| Database | PostgreSQL 16 + pgvector (semantic search) |
+| Cache / Queue | Redis |
+| PDF Parsing | GROBID 0.8.1 (TEI XML extraction) |
+| LLM | DeepSeek (chat + translation + entity extraction) |
+| Infra | 3 Docker containers: PostgreSQL, Redis, GROBID |
 
-3 containers: PostgreSQL, Redis, GROBID.
+---
 
 ## Quick Start
 
 ### Prerequisites
 
-- Docker Desktop installed and running
-- Node.js 18+ (for frontend dev)
-- Python 3.11+ (for backend dev)
-- A DeepSeek API key
+- Docker Desktop
+- Node.js 18+
+- Python 3.11+
+- A DeepSeek API key (https://platform.deepseek.com)
 
-### 1. Start Infrastructure
+### 1. Start Services
 
 ```bash
 docker compose up -d
 ```
 
-This starts PostgreSQL (with pgvector), Redis, and GROBID.
+Starts PostgreSQL (with pgvector extension), Redis, and GROBID.
 
-### 2. Configure Backend
+### 2. Configure & Run Backend
 
 ```bash
 cd apps/api
-cp .env.template .env
-# Edit .env — add your DeepSeek API key and any other settings
-```
-
-```bash
+cp .env.template .env       # edit .env — add your DeepSeek API key
 pip install -e .
 alembic upgrade head
 uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
@@ -69,22 +87,29 @@ npx next dev --port 3000
 
 ### 4. Open
 
-Visit `http://localhost:3000`, register an account, and create your first project.
+Visit `http://localhost:3000` → register an account → create your first project → Discover papers.
+
+---
 
 ## Key Design Decisions
 
 | Decision | Rationale |
 |----------|-----------|
-| No Neo4j | Only Hotspot + Gap charts are retained; Postgres GROUP BY is faster and lighter |
-| No arq/Redis queue | Single-user context — report generation runs inline |
-| No MinIO | PDFs stored on local filesystem (`data/pdfs/`) |
-| Dynamic vocabulary | TF-IDF from paper corpus, seed word list for initial bootstrap |
-| LLM proxy | All AI calls go through backend; API key never touches the browser |
+| No Neo4j | Hotspot + Gap charts only; PostgreSQL `GROUP BY` is faster, lighter, and simpler |
+| No message queue (arq/Redis) | Single-user context — report generation runs inline; fewer moving parts |
+| No object storage (MinIO) | PDFs stored on local filesystem (`data/pdfs/`); no external service dependency |
+| Dynamic vocabulary | TF-IDF extracted from user's paper corpus; cross-disciplinary seed words for cold start. Works for any field — molecular biology, materials science, social sciences |
+| LLM server-side proxy | All DeepSeek calls go through backend `POST /api/v1/llm/proxy`; API key never touches the browser |
+| `_deprecated/` directory | Old components (ForceGraph, AuthorNetwork, TimelineView, GraphSidebar) kept for reference but not loaded |
+
+---
 
 ## Roadmap
 
-See [ROADMAP.md](ROADMAP.md) for the full development plan and current status.
+See **[ROADMAP.md](ROADMAP.md)** for the complete product roadmap and current status.
+
+---
 
 ## License
 
-MIT
+MIT © 2025–2026
