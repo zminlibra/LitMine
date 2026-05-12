@@ -1,52 +1,68 @@
-# LitMine
+<p align="center">
+  <img src="https://raw.githubusercontent.com/zminlibra/LitMine/master/images/1%20cover.png" width="100%" alt="LitMine Cover" style="max-width: 100%;" />
+</p>
+
+<p align="center">
+  <strong>AI-powered literature mining and research analytics platform for researchers across all disciplines.</strong>
+</p>
+
+<p align="center">
+  <a href="README_CN.md">中文</a> |
+  <a href="README.md">English</a>
+</p>
 
 <p align="center">
   <img src="https://img.shields.io/badge/status-active-success?style=flat-square" alt="Status" />
   <img src="https://img.shields.io/badge/license-MIT-blue?style=flat-square" alt="License" />
-  <img src="https://img.shields.io/badge/Python-3.11+-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python" />
-  <img src="https://img.shields.io/badge/Next.js-16.2-black?style=flat-square&logo=next.js" alt="Next.js" />
+  <img src="https://img.shields.io/badge/platform-macOS%20%7C%20Windows-lightgrey?style=flat-square" alt="Platform" />
 </p>
 
-<p align="center"><strong>AI-powered literature mining and research analytics platform for researchers across all disciplines.</strong></p>
+---
+
+## What is LitMine
+
+LitMine is an AI-powered platform that helps researchers **complete literature surveys faster**. It does not rely on any preset domain vocabulary — whether you work in synthetic biology, materials science, or social sciences, LitMine extracts keywords from your paper corpus automatically, identifies research hotspots, finds gaps, and generates structured literature reviews.
+
+The traditional literature survey workflow — searching PubMed / Google Scholar paper by paper → manually organizing notes → judging hotspots and gaps yourself → writing the review — is compressed by LitMine into minutes.
 
 ---
 
-## What LitMine Does
+## Features
 
-| | | |
-|---|---|---|
-| :mag: **Discover** | Search papers across arXiv, PubMed, bioRxiv, and OpenAlex simultaneously with automatic deduplication and metadata extraction |
-| :bookmark_tabs: **Import** | Upload PDFs (auto-parsed via GROBID for title, authors, abstract, DOI), paste DOI links, or import BibTeX/RIS files from reference managers |
-| :bar_chart: **Analyze** | See hotspot trends and research gap matrices powered by dynamic TF-IDF term extraction — no hardcoded domain vocabulary, works for **any** research field |
-| :robot: **AI Deep Read** | 7-dimension paper analysis, multi-language translation (EN/ZH/JA/KO/ES/IT), AI-powered paper comparison, and chat-with-paper |
-| :page_facing_up: **Generate** | Structured literature reviews with tables, bullet points, and a narrative introduction section ready for your paper |
-| :globe_with_meridians: **Multi-language** | Translation, analysis, comparison, and report all support English / Chinese / Japanese / Korean / Spanish / Italian |
+- **Paper Discovery** — Search across arXiv, PubMed, bioRxiv, and OpenAlex simultaneously with automatic deduplication and metadata backfill
+- **Paper Import** — Upload PDFs (auto-parsed via GROBID for title, authors, abstract, DOI), paste DOI links, or import BibTeX/RIS files
+- **Multi-language Translation** — Translate paper titles and abstracts into Chinese, Japanese, Korean, Spanish, or Italian. Results cached to database — no repeated API calls
+- **AI Deep Analysis** — Seven-dimension analysis: summary, core contribution, methodology, key results, key takeaways, limitations, and deep insights
+- **Paper Comparison** — Select multiple papers and let AI compare methodology, findings, strengths, limitations, and research gaps
+- **Chat with Paper** — Ask questions about any paper and get contextual answers
+- **Research Hotspots & Gaps** — Dynamic TF-IDF term extraction + trend slope sorting. Works for any research direction — no hardcoded vocabulary
+- **Literature Review Generation** — 5-section structured report with three-line academic tables and a narrative introduction section ready for your paper
+- **Full-platform Multi-language** — Translation, analysis, comparison, and reports all support six languages (EN/ZH/JA/KO/ES/IT)
+- **3-container Deployment** — PostgreSQL + Redis + GROBID, `docker compose up -d` to start
 
 ---
 
-## Architecture
+## Screenshots
 
-```
-litmine/
-├── apps/
-│   ├── api/          # FastAPI backend (Python 3.11+)
-│   └── web/          # Next.js frontend (TypeScript)
-├── docker-compose.yml
-├── README.md
-├── README_CN.md
-├── ROADMAP.md
-└── scripts/
-```
+<p align="center">
+  <img src="https://raw.githubusercontent.com/zminlibra/LitMine/master/images/2%20projects.png" width="100%" alt="Projects Dashboard" style="max-width: 100%;" />
+</p>
 
-| Layer | Technology |
-|-------|-----------|
-| Backend | FastAPI + SQLAlchemy + asyncpg |
-| Frontend | Next.js 16 (App Router) + TypeScript + Tailwind CSS |
-| Database | PostgreSQL 16 + pgvector (semantic search) |
-| Cache / Queue | Redis |
-| PDF Parsing | GROBID 0.8.1 (TEI XML extraction) |
-| LLM | DeepSeek (chat + translation + entity extraction) |
-| Infra | 3 Docker containers: PostgreSQL, Redis, GROBID |
+<p align="center">
+  <img src="https://raw.githubusercontent.com/zminlibra/LitMine/master/images/3%20project%20contents.png" width="100%" alt="Project Contents" style="max-width: 100%;" />
+</p>
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/zminlibra/LitMine/master/images/4%20paper%20analysis.png" width="100%" alt="Paper Analysis" style="max-width: 100%;" />
+</p>
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/zminlibra/LitMine/master/images/5%20paper%20comparison.png" width="100%" alt="Paper Comparison" style="max-width: 100%;" />
+</p>
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/zminlibra/LitMine/master/images/6%20reports.png" width="100%" alt="Reports" style="max-width: 100%;" />
+</p>
 
 ---
 
@@ -57,7 +73,7 @@ litmine/
 - Docker Desktop
 - Node.js 18+
 - Python 3.11+
-- A DeepSeek API key (https://platform.deepseek.com)
+- DeepSeek API key (https://platform.deepseek.com)
 
 ### 1. Start Services
 
@@ -91,16 +107,55 @@ Visit `http://localhost:3000` → register an account → create your first proj
 
 ---
 
+## Architecture
+
+```
+litmine/
+├── apps/
+│   ├── api/          # FastAPI backend (Python 3.11+)
+│   └── web/          # Next.js frontend (TypeScript)
+├── docker-compose.yml
+├── README.md
+├── README_CN.md
+├── ROADMAP.md
+└── scripts/
+```
+
+## Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| Backend | FastAPI + SQLAlchemy + asyncpg |
+| Frontend | Next.js 16 (App Router) + TypeScript + Tailwind CSS |
+| Database | PostgreSQL 16 + pgvector (semantic search) |
+| Cache | Redis |
+| PDF Parsing | GROBID 0.8.1 (TEI XML extraction) |
+| LLM | DeepSeek (chat + translation + entity extraction) |
+| Infra | 3 Docker containers: PostgreSQL, Redis, GROBID |
+
+---
+
 ## Key Design Decisions
 
 | Decision | Rationale |
 |----------|-----------|
-| No Neo4j | Hotspot + Gap charts only; PostgreSQL `GROUP BY` is faster, lighter, and simpler |
-| No message queue (arq/Redis) | Single-user context — report generation runs inline; fewer moving parts |
-| No object storage (MinIO) | PDFs stored on local filesystem (`data/pdfs/`); no external service dependency |
-| Dynamic vocabulary | TF-IDF extracted from user's paper corpus; cross-disciplinary seed words for cold start. Works for any field — molecular biology, materials science, social sciences |
-| LLM server-side proxy | All DeepSeek calls go through backend `POST /api/v1/llm/proxy`; API key never touches the browser |
-| `_deprecated/` directory | Old components (ForceGraph, AuthorNetwork, TimelineView, GraphSidebar) kept for reference but not loaded |
+| No Neo4j | Hotspot + Gap charts only; PostgreSQL `GROUP BY` is faster and lighter |
+| No message queue | Single-user context — report generation runs inline; fewer moving parts |
+| No object storage | PDFs stored on local filesystem; no external service dependency |
+| Dynamic vocabulary | TF-IDF from user's paper corpus; cross-disciplinary seed words for cold start |
+| LLM server-side proxy | All AI calls go through backend; API key never touches the browser |
+
+---
+
+## Development
+
+```bash
+# Backend
+cd apps/api && uvicorn app.main:app --reload
+
+# Frontend
+cd apps/web && npx next dev
+```
 
 ---
 

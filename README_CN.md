@@ -1,52 +1,68 @@
-# LitMine
+<p align="center">
+  <img src="https://raw.githubusercontent.com/zminlibra/LitMine/master/images/1%20cover.png" width="100%" alt="LitMine Cover" style="max-width: 100%;" />
+</p>
+
+<p align="center">
+  <strong>面向全学科科研人员的 AI 驱动文献挖掘与研究分析平台</strong>
+</p>
+
+<p align="center">
+  <a href="README.md">English</a> |
+  <a href="README_EN.md">日本語（準備中）</a>
+</p>
 
 <p align="center">
   <img src="https://img.shields.io/badge/status-active-success?style=flat-square" alt="Status" />
   <img src="https://img.shields.io/badge/license-MIT-blue?style=flat-square" alt="License" />
-  <img src="https://img.shields.io/badge/Python-3.11+-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python" />
-  <img src="https://img.shields.io/badge/Next.js-16.2-black?style=flat-square&logo=next.js" alt="Next.js" />
+  <img src="https://img.shields.io/badge/platform-macOS%20%7C%20Windows-lightgrey?style=flat-square" alt="Platform" />
 </p>
 
-<p align="center"><strong>面向全学科科研人员的 AI 驱动文献挖掘与研究分析平台。</strong></p>
+---
+
+## LitMine 是什么
+
+LitMine 是一个帮助科研人员**快速完成文献调研**的 AI 平台。它不预设任何学科词表——无论你做的是合成生物学、材料科学还是社会科学，LitMine 都能从你的论文语料中自动提取关键词、识别研究热点、找出研究空白，并生成结构化的文献综述。
+
+传统的文献调研流程是：在 PubMed / Google Scholar 里一篇一篇翻 → 手动整理笔记 → 自己判断热点和空白 → 写文献综述。LitMine 把这条流程压缩到几分钟。
 
 ---
 
-## 能做什么
+## 功能特性
 
-| | | |
-|---|---|---|
-| :mag: **论文发现** | 从 arXiv、PubMed、bioRxiv、OpenAlex 四个数据源同步搜索，自动去重和元数据提取 |
-| :bookmark_tabs: **论文导入** | 上传 PDF（GROBID 自动解析标题/作者/摘要/DOI）、粘贴 DOI 链接、导入 BibTeX/RIS 参考文献文件 |
-| :bar_chart: **研究分析** | 动态热点趋势 + 研究空白矩阵，TF-IDF 自动提取术语，**不预设学科词表**，适用于任何研究方向 |
-| :robot: **AI 深度阅读** | 七维度论文分析、多语言翻译（中/日/韩/西/意）、AI 论文对比、论文对话 |
-| :page_facing_up: **综述生成** | 结构化文献综述（表格 + 项目符号 + 可直接用于论文引言章节的叙事综述） |
-| :globe_with_meridians: **全平台多语言** | 翻译、分析、对比、报告均支持中英日韩西意六种语言 |
+- **论文发现** — 从 arXiv、PubMed、bioRxiv、OpenAlex 四个数据源同步搜索，自动去重和元数据补全
+- **论文导入** — 上传 PDF（GROBID 自动解析标题/作者/摘要/DOI）、粘贴 DOI 链接、导入 BibTeX/RIS 参考文献文件
+- **多语言翻译** — 论文标题和摘要翻译，支持中/日/韩/西/意五种语言，翻译结果缓存到数据库不会重复调 API
+- **AI 深度分析** — 七维度论文分析（总结、核心贡献、方法论、关键结果、要点、局限性、深度洞察）
+- **论文对比** — 选多篇论文，AI 从方法论、发现、优缺点、研究空白等维度做深度对比
+- **论文对话** — 和论文对话，问什么答什么
+- **研究热点与空白** — 动态 TF-IDF 术语提取 + 趋势斜率排序，不预设学科词表，适用于任何研究方向
+- **文献综述生成** — 5 段结构化报告（领域概览 + 概念关系 + 方法论对比 + 贡献者与空白 + 叙事综述），带三线表格
+- **全平台多语言** — 翻译、分析、对比、报告均支持中英日韩西意六种语言
+- **3 容器部署** — PostgreSQL + Redis + GROBID，`docker compose up -d` 一键启动
 
 ---
 
-## 技术架构
+## 截图
 
-```
-litmine/
-├── apps/
-│   ├── api/          # FastAPI 后端 (Python 3.11+)
-│   └── web/          # Next.js 前端 (TypeScript)
-├── docker-compose.yml
-├── README.md
-├── README_CN.md
-├── ROADMAP.md
-└── scripts/
-```
+<p align="center">
+  <img src="https://raw.githubusercontent.com/zminlibra/LitMine/master/images/2%20projects.png" width="100%" alt="Projects Dashboard" style="max-width: 100%;" />
+</p>
 
-| 层 | 技术 |
-|----|------|
-| 后端 | FastAPI + SQLAlchemy + asyncpg |
-| 前端 | Next.js 16 (App Router) + TypeScript + Tailwind CSS |
-| 数据库 | PostgreSQL 16 + pgvector（语义搜索） |
-| 缓存/队列 | Redis |
-| PDF 解析 | GROBID 0.8.1（TEI XML 提取） |
-| 大模型 | DeepSeek（对话 + 翻译 + 实体提取） |
-| 基础设施 | 3 个 Docker 容器：PostgreSQL、Redis、GROBID |
+<p align="center">
+  <img src="https://raw.githubusercontent.com/zminlibra/LitMine/master/images/3%20project%20contents.png" width="100%" alt="Project Contents" style="max-width: 100%;" />
+</p>
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/zminlibra/LitMine/master/images/4%20paper%20analysis.png" width="100%" alt="Paper Analysis" style="max-width: 100%;" />
+</p>
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/zminlibra/LitMine/master/images/5%20paper%20comparison.png" width="100%" alt="Paper Comparison" style="max-width: 100%;" />
+</p>
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/zminlibra/LitMine/master/images/6%20reports.png" width="100%" alt="Reports" style="max-width: 100%;" />
+</p>
 
 ---
 
@@ -91,22 +107,61 @@ npx next dev --port 3000
 
 ---
 
+## 架构
+
+```
+litmine/
+├── apps/
+│   ├── api/          # FastAPI 后端 (Python 3.11+)
+│   └── web/          # Next.js 前端 (TypeScript)
+├── docker-compose.yml
+├── README.md
+├── README_CN.md
+├── ROADMAP.md
+└── scripts/
+```
+
+## 技术栈
+
+| 层 | 技术 |
+|----|------|
+| 后端 | FastAPI + SQLAlchemy + asyncpg |
+| 前端 | Next.js 16 (App Router) + TypeScript + Tailwind CSS |
+| 数据库 | PostgreSQL 16 + pgvector（语义搜索） |
+| 缓存 | Redis |
+| PDF 解析 | GROBID 0.8.1（TEI XML 提取） |
+| 大模型 | DeepSeek（对话 + 翻译 + 实体提取） |
+| 基础设施 | 3 个 Docker 容器：PostgreSQL、Redis、GROBID |
+
+---
+
 ## 关键设计决策
 
 | 决策 | 原因 |
 |------|------|
-| 不用 Neo4j | 只保留热点图和空白矩阵，PostgreSQL `GROUP BY` 更快更轻，运维更简单 |
-| 不用消息队列（arq/Redis） | 单用户场景下报告生成内联即可，减少运维组件 |
-| 不用对象存储（MinIO） | PDF 存本地文件系统（`data/pdfs/`），无外部服务依赖 |
-| 术语动态提取 | TF-IDF 从用户论文语料中自动提取，跨学科种子词做冷启动。适用于任何领域——分子生物学、材料科学、社会科学都可以 |
-| LLM 服务端代理 | 所有 DeepSeek 调用走后端 `POST /api/v1/llm/proxy`，API Key 不接触浏览器 |
-| `_deprecated/` 目录 | 旧组件（ForceGraph、AuthorNetwork、TimelineView、GraphSidebar）保留供参考但不加载 |
+| 不用 Neo4j | 只保留热点图和空白矩阵，PostgreSQL `GROUP BY` 更快更轻 |
+| 不用消息队列 | 单用户场景下报告生成内联即可，减少运维组件 |
+| 不用对象存储 | PDF 存本地文件系统，无外部服务依赖 |
+| 术语动态提取 | TF-IDF 从用户论文语料中自动提取，跨学科种子词做冷启动 |
+| LLM 服务端代理 | 所有 AI 调用走后端，API Key 不接触浏览器 |
+
+---
+
+## 开发
+
+```bash
+# 后端
+cd apps/api && uvicorn app.main:app --reload
+
+# 前端
+cd apps/web && npx next dev
+```
 
 ---
 
 ## 路线图
 
-详见 **[ROADMAP.md](ROADMAP.md)** 查看完整产品路线图和当前进度。
+详见 **[ROADMAP.md](ROADMAP.md)**。
 
 ---
 
