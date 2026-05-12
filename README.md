@@ -74,7 +74,7 @@ The traditional literature survey workflow — searching PubMed / Google Scholar
 - Docker Desktop
 - Node.js 18+
 - Python 3.11+
-- DeepSeek API key (https://platform.deepseek.com)
+- An LLM API key (DeepSeek, OpenAI, Gemini, Anthropic, OpenRouter, Qwen, or Kimi — see [LLM Settings](#) in-app)
 
 ### 1. Start Services
 
@@ -88,7 +88,7 @@ Starts PostgreSQL (with pgvector extension), Redis, and GROBID.
 
 ```bash
 cd apps/api
-cp .env.template .env       # edit .env — add your DeepSeek API key
+cp .env.template .env       # edit .env — (optional) set a server-default LLM API key
 pip install -e .
 alembic upgrade head
 uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
@@ -144,7 +144,7 @@ litmine/
 | No message queue | Single-user context — report generation runs inline; fewer moving parts |
 | No object storage | PDFs stored on local filesystem; no external service dependency |
 | Dynamic vocabulary | TF-IDF from user's paper corpus; cross-disciplinary seed words for cold start |
-| LLM server-side proxy | All AI calls go through backend; API key never touches the browser |
+| LLM server-side proxy + multi-provider | 7 providers supported (DeepSeek, OpenAI, Gemini, Anthropic, OpenRouter, Qwen, Kimi). User API keys stored locally in browser, all calls routed through backend proxy |
 
 ---
 
