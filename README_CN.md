@@ -8,7 +8,7 @@
 
 <p align="center">
   <a href="README.md">English</a> |
-  <a href="README_EN.md">日本語（準備中）</a>
+  <a href="README_JP.md">日本語</a>
 </p>
 
 <p align="center">
