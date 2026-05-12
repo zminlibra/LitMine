@@ -6,21 +6,19 @@ import type { GapItem } from "@/types";
 
 interface GapMatrixProps {
   gaps: GapItem[];
+  paperCount?: number;
 }
 
-/**
- * Given a gap's A/B paper counts, compute an opportunity score (0–1).
- * A bigger gap between the two counts signals a larger opportunity.
- */
+/** Laplace-smoothed gap score: 1 - (co_occurrence + 1) / (min(a_papers, b_papers) + 1)
+ *  Matches the backend formula. Never saturates at 1.0,
+ *  differentiates pairs with identical zero co-occurrence but different paper volume. */
 function computeOpportunity(gap: GapItem): number {
-  if (gap.concept_b_papers === 0 && gap.concept_a_papers === 0) return 0;
-  const total = gap.concept_a_papers + gap.concept_b_papers;
-  if (total === 0) return 0;
-  const diff = Math.abs(gap.concept_a_papers - gap.concept_b_papers);
-  return Math.min(diff / total, 1);
+  const minCount = Math.min(gap.concept_a_papers, gap.concept_b_papers);
+  if (minCount <= 0) return 1;
+  return 1 - (gap.co_occurrence + 1) / (minCount + 1);
 }
 
-export default function GapMatrix({ gaps }: GapMatrixProps) {
+export default function GapMatrix({ gaps, paperCount }: GapMatrixProps) {
   const [selectedCell, setSelectedCell] = useState<{
     conceptA: string;
     conceptB: string;
@@ -93,11 +91,17 @@ export default function GapMatrix({ gaps }: GapMatrixProps) {
   );
 
   if (!gaps || gaps.length === 0) {
+    const isInsufficientData = paperCount !== undefined && paperCount < 5;
     return (
-      <div className="flex h-64 flex-col items-center justify-center gap-2 rounded-lg border border-dashed border-emerald-200 bg-emerald-50/50 dark:border-emerald-800 dark:bg-emerald-950/30">
-        <CircleDot className="h-10 w-10 text-emerald-300 dark:text-emerald-700" />
-        <p className="text-sm text-emerald-600 dark:text-emerald-400">
-          No research gaps identified
+      <div className="flex h-64 flex-col items-center justify-center gap-2 rounded-lg border border-dashed border-amber-200 bg-amber-50/50">
+        <CircleDot className="h-10 w-10 text-amber-300" />
+        <p className="text-sm text-amber-700 font-medium">
+          {isInsufficientData ? "Insufficient data" : "No research gaps identified"}
+        </p>
+        <p className="text-xs text-amber-600">
+          {isInsufficientData
+            ? "Add more papers (≥5) to enable gap analysis."
+            : "Try adding papers from different research areas to surface gaps."}
         </p>
       </div>
     );
@@ -146,29 +150,9 @@ export default function GapMatrix({ gaps }: GapMatrixProps) {
                   if (isSame) {
                     bgStyle = { backgroundColor: "rgba(0,0,0,0.03)" };
                   } else if (cell.exists) {
-                    // Blue (low opportunity) → Green → Yellow → Red (high opportunity)
-                    const t = alpha; // 0..1
-                    let r: number, g: number, b: number;
-                    if (t < 0.33) {
-                      // Blue → Light Blue
-                      const s = t / 0.33;
-                      r = Math.round(59 + s * (147 - 59));
-                      g = Math.round(130 + s * (197 - 130));
-                      b = Math.round(234 + s * (255 - 234));
-                    } else if (t < 0.66) {
-                      // Light Blue → Yellow
-                      const s = (t - 0.33) / 0.33;
-                      r = Math.round(147 + s * (239 - 147));
-                      g = Math.round(197 + s * (234 - 197));
-                      b = Math.round(255 - s * 187);
-                    } else {
-                      // Yellow → Red
-                      const s = (t - 0.66) / 0.34;
-                      r = 239;
-                      g = Math.round(234 - s * 166);
-                      b = Math.round(68 - s * 68);
-                    }
-                    bgStyle = { backgroundColor: `rgb(${r},${g},${b})` };
+                    // HSL continuous gradient: blue (low) → green → yellow → red (high)
+                    const hue = 220 - alpha * 220;
+                    bgStyle = { backgroundColor: `hsl(${hue}, 75%, 50%)` };
                   }
 
                   const textColor = cell.exists && opportunity > 0.4 ? "text-white" : "text-zinc-700";
@@ -212,7 +196,7 @@ export default function GapMatrix({ gaps }: GapMatrixProps) {
         <span className="text-[10px] text-zinc-400 pb-2.5">0%</span>
         <div className="relative w-52">
           <div className="h-3 w-full rounded-full overflow-hidden" style={{
-            background: "linear-gradient(to right, rgb(59,130,234), rgb(147,197,255), rgb(239,234,68), rgb(239,68,68))",
+            background: "linear-gradient(to right, hsl(220,75%,50%), hsl(140,75%,50%), hsl(55,75%,50%), hsl(0,75%,50%))",
           }} />
           {[20,40,60,80].map((pct) => (
             <div key={pct} className="absolute top-0 -translate-x-1/2" style={{ left: `${pct}%` }}>
