@@ -33,6 +33,9 @@ async def get_hotspots(
     )
     papers = papers_result.scalars().all()
 
+    if len(papers) < 5:
+        return HotspotResponse(hotspots=[])
+
     # Combine project keywords with dynamically extracted terms
     from app.services.term_extractor import extract_terms
     paper_dicts = [{"title": p.title, "abstract": p.abstract} for p in papers]
@@ -40,26 +43,50 @@ async def get_hotspots(
     project_kw = [k.lower() for k in (project.keywords or [])]
     keywords = list(dict.fromkeys(project_kw + [t for t in dynamic_terms if t.lower() not in project_kw]))[:30]
 
+    # Determine "recent" threshold: last 3 years or papers published in the last 40% of the time span
+    years = sorted(p.year for p in papers if p.year)
+    if years:
+        recent_threshold = max(years[-1] - 3, sorted(years)[int(len(years) * 0.6)] if len(years) >= 5 else years[-1] - 2)
+    else:
+        recent_threshold = 0
+
     hotspot_data: dict[str, dict] = {}
     for paper in papers:
         text = f"{paper.title or ''} {paper.abstract or ''}"
         for kw in keywords:
             if kw.lower() in text.lower():
                 if kw not in hotspot_data:
-                    hotspot_data[kw] = {"frequency": 0, "years": []}
+                    hotspot_data[kw] = {"frequency": 0, "recent": 0, "years": []}
                 hotspot_data[kw]["frequency"] += 1
+                if paper.year and paper.year >= recent_threshold:
+                    hotspot_data[kw]["recent"] += 1
                 if paper.year:
                     hotspot_data[kw]["years"].append(paper.year)
 
+    # Compute trend score: how much the term is accelerating
+    # trend = recent_ratio * frequency (reward both rising trends and substantial volume)
     hotspots = []
-    for name, data in sorted(hotspot_data.items(), key=lambda x: x[1]["frequency"], reverse=True):
+    for name, data in hotspot_data.items():
+        freq = data["frequency"]
+        recent = data["recent"]
+        older = freq - recent
+        # Avoid division by zero: if 0 older papers, it's a very new term
+        trend_ratio = recent / max(older, 1)
+        # Composite score: favor terms that are both rising AND have recent volume
+        trend_score = trend_ratio * (recent / max(freq, 1))
+
         avg_year = sum(data["years"]) / len(data["years"]) if data["years"] else 0
+
         hotspots.append(HotspotItem(
             name=name,
-            frequency=data["frequency"],
+            frequency=freq,
+            recent_freq=recent,
             avg_year=round(avg_year, 1),
+            trend=round(trend_score, 2),
         ))
 
+    # Sort by trend score descending
+    hotspots.sort(key=lambda x: x.trend, reverse=True)
     return HotspotResponse(hotspots=hotspots[:15])
 
 
@@ -82,13 +109,23 @@ async def get_gaps(
     )
     papers = papers_result.scalars().all()
 
-    # Dynamically extract terms from paper titles/abstracts via TF-IDF
+    if len(papers) < 5:
+        return []
+
+    # Extract terms with wider window: top 50 instead of top 30
+    # Also include project keywords directly to ensure user's domain terms aren't missed
     from app.services.term_extractor import extract_terms
     paper_dicts = [
         {"title": p.title, "abstract": p.abstract}
         for p in papers
     ]
-    search_terms = extract_terms(paper_dicts)
+    dynamic_terms = extract_terms(paper_dicts, max_terms=50)
+    # Merge: project keywords + dynamic terms (wider coverage)
+    project_kw = [k.lower() for k in (project.keywords or [])]
+    search_terms = list(dict.fromkeys(
+        project_kw +
+        [t for t in dynamic_terms if t.lower() not in project_kw]
+    ))[:60]  # wider window
 
     # Count papers for each term
     term_counts: dict[str, int] = {}
@@ -107,7 +144,7 @@ async def get_gaps(
     if len(active_terms) < 2:
         return []
 
-    # Find pairs with low co-occurrence
+    # Find pairs with low co-occurrence, pass full data to frontend
     gaps = []
     for t1, c1 in active_terms.items():
         for t2, c2 in active_terms.items():
@@ -116,12 +153,15 @@ async def get_gaps(
             co_occurrence = len(term_sets[t1] & term_sets[t2])
             min_count = min(c1, c2)
             if min_count > 0 and co_occurrence < min_count * 0.4:
-                gap_score = (c1 + c2) * (1 - co_occurrence / min_count)
+                # Normalized 0-1 gap score
+                gap_score = round(1 - (co_occurrence / min_count), 3)
                 gaps.append((gap_score, GapItem(
                     concept_a=t1,
                     concept_b=t2,
                     concept_a_papers=c1,
                     concept_b_papers=c2,
+                    co_occurrence=co_occurrence,
+                    gap_score=gap_score,
                 )))
 
     gaps.sort(key=lambda g: g[0], reverse=True)

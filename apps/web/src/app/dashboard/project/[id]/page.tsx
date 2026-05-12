@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useRef, useCallback } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { api } from "@/lib/api-client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -31,7 +31,10 @@ const STAGE_LABELS: Record<string, string> = {
 export default function ProjectDetailPage() {
   const params = useParams();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const projectId = params.id as string;
+  const showDiscoverPulse = searchParams.get("guide") === "discover";
+  const autoCompare = searchParams.get("guide") === "compare";
 
   const [project, setProject] = useState<Project | null>(null);
   const [papers, setPapers] = useState<Paper[]>([]);
@@ -114,7 +117,7 @@ export default function ProjectDetailPage() {
     }
   };
 
-  const [compareMode, setCompareMode] = useState(false);
+  const [compareMode, setCompareMode] = useState(autoCompare);
   const [showCompareModal, setShowCompareModal] = useState(false);
   const [selectedForCompare, setSelectedForCompare] = useState<Set<string>>(new Set());
   const [refreshingIds, setRefreshingIds] = useState<Set<string>>(new Set());
@@ -286,7 +289,7 @@ export default function ProjectDetailPage() {
             </Button>
           )}
           <Button
-            className="bg-emerald-600 hover:bg-emerald-700 gap-1"
+            className={`bg-emerald-600 hover:bg-emerald-700 gap-1 ${showDiscoverPulse ? "animate-pulse-glow" : ""}`}
             size="sm"
             onClick={handleStartSearch}
             disabled={isActive || searching}

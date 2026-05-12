@@ -98,3 +98,12 @@ body {
   margin-bottom: 0.25rem;
   line-height: 1.6;
 }
+
+/* ── Pulse glow animation for guided actions ── */
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(5, 150, 105, 0.5); }
+  50% { box-shadow: 0 0 0 8px rgba(5, 150, 105, 0); }
+}
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}

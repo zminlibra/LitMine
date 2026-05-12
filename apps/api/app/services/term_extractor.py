@@ -11,29 +11,28 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-# Broad seed word list — covers multiple disciplines, provides initial coverage
-# when there aren't enough papers for meaningful TF-IDF
+# Minimal seed word list — only cross-disciplinary generic terms.
+# Domain-specific terms come entirely from TF-IDF on the user's paper corpus.
+# This ensures the platform works for ANY research field, not just molecular biology.
+#
+# If you need to bias term extraction toward a specific domain (e.g. for a field-specific
+# deployment), add words to DOMAIN_BIAS_WORDS below. They are merged into SEED_TERMS
+# at extraction time. Leave empty for fully dynamic, domain-agnostic extraction.
+DOMAIN_BIAS_WORDS: set[str] = set()
+
 SEED_TERMS: set[str] = {
-    # Molecular biology
-    "CRISPR", "Cas9", "Cas12", "Cas13", "genome editing", "gene editing",
-    "base editing", "prime editing", "knockout", "knockdown", "overexpression",
-    "heterologous expression", "promoter", "plasmid", "vector",
-    # Omics
-    "transcriptomics", "proteomics", "metabolomics", "genomics",
-    "RNA-seq", "single-cell", "multi-omics",
-    # Metabolic & synthetic biology
-    "metabolic engineering", "synthetic biology", "pathway engineering",
-    "strain engineering", "directed evolution", "rational design",
-    "high-throughput", "flux balance", "metabolic flux",
-    # Common model organisms
-    "E. coli", "yeast", "Saccharomyces", "Bacillus", "Streptomyces",
-    "mammalian", "Arabidopsis", "zebrafish", "Drosophila",
-    # Methods
+    # Universal research methods / approaches
     "machine learning", "deep learning", "neural network",
-    "fermentation", "bioreactor", "fed-batch",
-    # Applications
-    "antibiotic", "resistance", "biofilm", "quorum sensing",
-    "natural product", "secondary metabolite", "biosynthesis",
+    "simulation", "modeling", "computational",
+    "high-throughput", "screening",
+    "optimization", "characterization",
+    "in vitro", "in vivo", "clinical trial",
+    # Universal analysis terms
+    "mechanism", "pathway", "regulation",
+    "synthesis", "degradation", "biosynthesis",
+    "expression", "purification",
+    # Cross-domain applications
+    "sustainability", "renewable", "green chemistry",
 }
 
 # Words to exclude from TF-IDF (too common to be meaningful)
@@ -138,14 +137,15 @@ def _tokenize(text: str) -> list[str]:
     return tokens + bigrams
 
 
-def extract_terms(papers: list[dict]) -> list[str]:
+def extract_terms(papers: list[dict], max_terms: int = 30) -> list[str]:
     """Extract top terms from paper titles and abstracts using TF-IDF.
 
     Args:
         papers: list of dicts with 'title' and 'abstract' keys
+        max_terms: maximum number of terms to return
 
     Returns:
-        list of top ~30 terms sorted by TF-IDF score
+        list of top terms sorted by TF-IDF score
     """
     if not papers:
         return sorted(SEED_TERMS)[:30]
@@ -182,18 +182,14 @@ def extract_terms(papers: list[dict]) -> list[str]:
     # Sort by score
     sorted_terms = sorted(tfidf_scores.items(), key=lambda x: x[1], reverse=True)
 
-    # Take top 25 terms from TF-IDF
-    extracted = [t for t, _ in sorted_terms[:25]]
+    # Take top terms from TF-IDF, proportionally to max_terms
+    n_tfidf = min(len(sorted_terms), int(max_terms * 0.8)) if n_docs >= 10 else int(max_terms * 0.3)
+    extracted = [t for t, _ in sorted_terms[:n_tfidf]]
 
-    # Blend with seed terms: if we have enough papers (>10), prioritize TF-IDF
-    if n_docs >= 10:
-        # 80% TF-IDF, 20% seed
-        result = extracted[:24]  # top 24 from TF-IDF
-        seed_sample = [s for s in SEED_TERMS if s.lower() not in {e.lower() for e in extracted}]
-        result.extend(seed_sample[:6])
-    else:
-        # < 10 papers: 30% TF-IDF, 70% seed
-        result = extracted[:9]
-        result.extend(sorted(SEED_TERMS)[:21])
+    # Blend with seed terms if there's room (includes DOMAIN_BIAS_WORDS)
+    effective_seed = SEED_TERMS | DOMAIN_BIAS_WORDS
+    if len(extracted) < max_terms:
+        seed_sample = [s for s in sorted(effective_seed) if s.lower() not in {e.lower() for e in extracted}]
+        extracted.extend(seed_sample[:max_terms - len(extracted)])
 
-    return result[:30]
+    return extracted[:max_terms]

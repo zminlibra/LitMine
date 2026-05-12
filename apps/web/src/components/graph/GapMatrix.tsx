@@ -62,7 +62,7 @@ export default function GapMatrix({ gaps }: GapMatrixProps) {
         if (gap) {
           return {
             exists: true as const,
-            opportunity: computeOpportunity(gap),
+            opportunity: gap.gap_score ?? computeOpportunity(gap),
             gap,
           };
         }
@@ -258,14 +258,16 @@ export default function GapMatrix({ gaps }: GapMatrixProps) {
               </p>
             </div>
           </div>
-          <p className="mt-2 text-xs text-emerald-700 dark:text-emerald-400">
-            Gap opportunity score:{" "}
-            <span className="font-semibold">
-              {(computeOpportunity(selectedCell.gap) * 100).toFixed(0)}%
-            </span>
-            — a larger gap between paper counts suggests an under-explored
-            research intersection.
-          </p>
+          <div className="mt-2 space-y-1 text-xs text-emerald-700 dark:text-emerald-400">
+            <p>
+              Gap opportunity score:{" "}
+              <span className="font-semibold">
+                {((selectedCell.gap.gap_score ?? computeOpportunity(selectedCell.gap)) * 100).toFixed(0)}%
+              </span>
+            </p>
+            <p>Co-occurring papers: {selectedCell.gap.co_occurrence ?? "—"}</p>
+            <p>A larger score suggests a more underexplored intersection.</p>
+          </div>
         </div>
       )}
     </div>

@@ -73,7 +73,7 @@ TIER_CAPABILITIES = {
     "pro": {
         "max_projects": None,
         "max_papers_per_project": 200,
-        "sources": ["arxiv", "pubmed", "biorxiv", "cnki", "semantic_scholar"],
+        "sources": ["arxiv", "pubmed", "biorxiv", "openalex", "cnki", "semantic_scholar"],
         "max_report_sections": 4,
         "graph_features": ["citation_graph", "concept_graph", "method_graph", "organism_graph"],
         "monitoring_enabled": True,
@@ -84,7 +84,7 @@ TIER_CAPABILITIES = {
     "team": {
         "max_projects": None,
         "max_papers_per_project": 500,
-        "sources": ["arxiv", "pubmed", "biorxiv", "cnki", "semantic_scholar"],
+        "sources": ["arxiv", "pubmed", "biorxiv", "openalex", "cnki", "semantic_scholar"],
         "max_report_sections": 4,
         "graph_features": [
             "citation_graph",

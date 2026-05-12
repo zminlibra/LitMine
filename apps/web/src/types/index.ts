@@ -87,7 +87,9 @@ export interface Report {
 export interface HotspotItem {
   name: string;
   frequency: number;
+  recent_freq: number;
   avg_year: number;
+  trend: number;
 }
 
 export interface MethodEvolutionItem {
@@ -108,6 +110,8 @@ export interface GapItem {
   concept_b: string;
   concept_a_papers: number;
   concept_b_papers: number;
+  co_occurrence: number;
+  gap_score: number;
 }
 
 export interface AIAnalysisResult {
