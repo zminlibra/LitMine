@@ -16,8 +16,6 @@ services:
       interval: 5s
       timeout: 3s
       retries: 5
-    networks:
-      - litmine-net
 
   # ── Redis 7 (Cache + Message Queue) ──
   redis:
@@ -33,8 +31,6 @@ services:
       interval: 3s
       timeout: 2s
       retries: 5
-    networks:
-      - litmine-net
 
   # ── GROBID (PDF → TEI XML extraction) ──
   grobid:
@@ -50,61 +46,6 @@ services:
       timeout: 10s
       retries: 15
       start_period: 90s
-    networks:
-      - litmine-net
-
-  # ── API Server (FastAPI + Uvicorn) ──
-  api:
-    build:
-      context: ./apps/api
-      dockerfile: Dockerfile
-    container_name: litmine-api
-    ports:
-      - "8000:8000"
-    environment:
-      DATABASE_URL: "postgresql+asyncpg://litmine:litmine_dev@postgres:5432/litmine"
-      DATABASE_URL_SYNC: "postgresql://litmine:litmine_dev@postgres:5432/litmine"
-      REDIS_URL: "redis://redis:6379/0"
-      GROBID_URL: "http://grobid:8070"
-      CORS_ORIGINS: '["http://localhost:3000"]'
-      SECRET_KEY: "dev-secret-key-change-in-production"
-      DEBUG: "true"
-    depends_on:
-      postgres:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-    restart: unless-stopped
-    networks:
-      - litmine-net
-
-  # ── Arq Worker (Background job queue) ──
-  arq-worker:
-    build:
-      context: ./apps/api
-      dockerfile: Dockerfile
-    container_name: litmine-arq-worker
-    command: python -m arq app.workers.worker.WorkerSettings
-    environment:
-      DATABASE_URL: "postgresql+asyncpg://litmine:litmine_dev@postgres:5432/litmine"
-      DATABASE_URL_SYNC: "postgresql://litmine:litmine_dev@postgres:5432/litmine"
-      REDIS_URL: "redis://redis:6379/0"
-      GROBID_URL: "http://grobid:8070"
-      SECRET_KEY: "dev-secret-key-change-in-production"
-      DEBUG: "false"
-    depends_on:
-      postgres:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-    restart: unless-stopped
-    networks:
-      - litmine-net
-
-networks:
-  litmine-net:
-    name: litmine-network
-    driver: bridge
 
 volumes:
   postgres_data:
