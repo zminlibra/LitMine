@@ -166,6 +166,37 @@ See **[ROADMAP.md](ROADMAP.md)** for the complete product roadmap and current st
 
 ---
 
+## Buy Me a Coffee
+
+If LitMine helps your research, consider buying the author a coffee!
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/zminlibra/LitMine/master/images/wechat.jpg" width="28%" alt="WeChat Reward" style="min-width: 180px;" />
+  <img src="https://raw.githubusercontent.com/zminlibra/LitMine/master/images/alipay.jpg" width="28%" alt="Alipay" style="min-width: 180px;" />
+</p>
+<p align="center">
+  <sub>WeChat &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Alipay</sub>
+</p>
+
+## Contact
+
+- Email: zming19861028@126.com / zming19861028@hotmail.com
+- WeChat: zminlibra
+- GitHub: [zminlibra](https://github.com/zminlibra)
+
+## Acknowledgments
+
+LitMine is built on the shoulders of many great open-source projects:
+
+- [GROBID](https://github.com/kermitt2/grobid) — PDF to structured TEI XML extraction
+- [FastAPI](https://github.com/fastapi/fastapi) — Python web framework
+- [Next.js](https://github.com/vercel/next.js) — React framework
+- [Tailwind CSS](https://github.com/tailwindlabs/tailwindcss) — Utility-first CSS
+- [PostgreSQL](https://www.postgresql.org/) + [pgvector](https://github.com/pgvector/pgvector) — Database & vector search
+- [Recharts](https://github.com/recharts/recharts) — Charting library
+- [DeepSeek](https://www.deepseek.com/) — LLM API
+- All early-stage testers and colleagues who provided critical feedback during Phase 1–4
+
 ## License
 
 MIT © 2025–2026

@@ -167,6 +167,37 @@ cd apps/web && npx next dev
 
 ---
 
+## コーヒーをおごる
+
+LitMine があなたの研究に役立っているなら、コーヒーをおごってください！
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/zminlibra/LitMine/master/images/wechat.jpg" width="28%" alt="WeChat" style="min-width: 180px;" />
+  <img src="https://raw.githubusercontent.com/zminlibra/LitMine/master/images/alipay.jpg" width="28%" alt="Alipay" style="min-width: 180px;" />
+</p>
+<p align="center">
+  <sub>WeChat &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Alipay</sub>
+</p>
+
+## 連絡先
+
+- メール: zming19861028@126.com / zming19861028@hotmail.com
+- WeChat: zminlibra
+- GitHub: [zminlibra](https://github.com/zminlibra)
+
+## 謝辞
+
+LitMine は多くの優れたオープンソースプロジェクトの上に構築されています：
+
+- [GROBID](https://github.com/kermitt2/grobid) — PDF 構造化テキスト抽出
+- [FastAPI](https://github.com/fastapi/fastapi) — Python Web フレームワーク
+- [Next.js](https://github.com/vercel/next.js) — React フレームワーク
+- [Tailwind CSS](https://github.com/tailwindlabs/tailwindcss) — ユーティリティファースト CSS
+- [PostgreSQL](https://www.postgresql.org/) + [pgvector](https://github.com/pgvector/pgvector) — データベースとベクトル検索
+- [Recharts](https://github.com/recharts/recharts) — チャートライブラリ
+- [DeepSeek](https://www.deepseek.com/) — LLM API
+- Phase 1–4 で重要なフィードバックを提供してくれたすべてのテスターと同僚の皆さん
+
 ## ライセンス
 
 MIT © 2025–2026

@@ -165,6 +165,37 @@ cd apps/web && npx next dev
 
 ---
 
+## 请作者喝杯咖啡
+
+如果 LitMine 对你的科研有帮助，欢迎请作者喝杯咖啡！
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/zminlibra/LitMine/master/images/wechat.jpg" width="28%" alt="微信赞赏" style="min-width: 180px;" />
+  <img src="https://raw.githubusercontent.com/zminlibra/LitMine/master/images/alipay.jpg" width="28%" alt="支付宝打赏" style="min-width: 180px;" />
+</p>
+<p align="center">
+  <sub>微信赞赏 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 支付宝打赏</sub>
+</p>
+
+## 联系方式
+
+- 邮箱：zming19861028@126.com / zming19861028@hotmail.com
+- 微信：zminlibra
+- GitHub：[zminlibra](https://github.com/zminlibra)
+
+## 致谢
+
+LitMine 建立在许多优秀开源项目之上：
+
+- [GROBID](https://github.com/kermitt2/grobid) — PDF 结构化文本提取
+- [FastAPI](https://github.com/fastapi/fastapi) — Python Web 框架
+- [Next.js](https://github.com/vercel/next.js) — React 框架
+- [Tailwind CSS](https://github.com/tailwindlabs/tailwindcss) — 高效 CSS 方案
+- [PostgreSQL](https://www.postgresql.org/) + [pgvector](https://github.com/pgvector/pgvector) — 数据库与向量检索
+- [Recharts](https://github.com/recharts/recharts) — 图表库
+- [DeepSeek](https://www.deepseek.com/) — 大语言模型 API
+- 所有在 Phase 1–4 中提供关键反馈的测试者和同事们
+
 ## 许可证
 
 MIT © 2025–2026
